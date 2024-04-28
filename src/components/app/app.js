@@ -40,7 +40,6 @@ export default class App extends Component {
 
     return (
       <section className="main">
-        {console.log('sdgrd')}
         <Row>
           {films.map((film) => (
             <Col key={film.id} xs={24} sm={12}>

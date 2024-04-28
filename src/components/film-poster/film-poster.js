@@ -8,12 +8,10 @@ function FilmPoster({ film }) {
   return (
     <div className="filmPoster">
       <Row gutter={[16, 16]}>
-        {' '}
-        {/* Устанавливаем промежуток между колонками */}
-        <Col xs={24} sm={24} md={14} lg={10} xl={9}>
+        <Col xs={24} md={13} lg={10}>
           <img src={`https://image.tmdb.org/t/p/original/${film.poster_path}`} alt="" className="posterImage" />
         </Col>
-        <Col xs={24} sm={24} md={10} lg={14} xl={15}>
+        <Col xs={24} md={11} lg={14} className="filmInfo">
           <h1>{film.title}</h1>
           <ReleaseDate filmRelease={film.release_date} />
           <button>Action</button>
