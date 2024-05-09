@@ -5,6 +5,7 @@ import './app.css';
 
 import SwapiService from '../../services/swapi-service';
 import FilmPoster from '../film-poster/film-poster';
+import Loader from '../loader/loader';
 
 export default class App extends Component {
   constructor(props) {
@@ -35,7 +36,7 @@ export default class App extends Component {
     }
 
     if (films.length === 0) {
-      return <div>Loading...</div>;
+      return <Loader />;
     }
 
     return (
