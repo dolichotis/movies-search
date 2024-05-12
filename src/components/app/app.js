@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Alert } from 'antd';
 import 'antd/dist/reset.css';
 import './app.css';
 
@@ -12,30 +12,38 @@ export default class App extends Component {
     super(props);
     this.state = {
       films: [],
-      error: null,
+      error: false,
+      loading: true,
     };
     this.swapiService = new SwapiService();
   }
 
   componentDidMount() {
-    this.swapiService
-      .getMovies()
-      .then((data) => {
-        this.setState({ films: data.results });
-      })
-      .catch((error) => {
-        this.setState({ error: error.message });
-      });
+    setTimeout(() => {
+      this.swapiService
+        .getMovies()
+        .then((data) => {
+          this.setState({ films: data.results, loading: false });
+        })
+        .catch((error) => {
+          this.setState({ error: error.message, loading: false });
+        });
+    }, 500);
   }
 
+  onError = () => {
+    this.setState({
+      isLoading: false,
+      isError: true,
+    });
+  };
+
   render() {
-    const { films, error } = this.state;
+    const { films, error, loading } = this.state;
 
-    if (error) {
-      return <div>Error: {error}</div>;
-    }
+    const isError = error ? <Alert message={error} description="Возникла ошибка!" type="error" showIcon /> : null;
 
-    if (films.length === 0) {
+    if (loading) {
       return <Loader />;
     }
 
@@ -44,9 +52,10 @@ export default class App extends Component {
         <Row>
           {films.map((film) => (
             <Col key={film.id} xs={24} sm={12}>
-              <FilmPoster film={film} />
+              <FilmPoster film={film} onError={this.onError} />
             </Col>
           ))}
+          {isError}
         </Row>
       </section>
     );
