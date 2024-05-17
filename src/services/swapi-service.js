@@ -15,11 +15,21 @@ export default class SwapiService {
     if (!response.ok) {
       throw new Error('Failed to fetch data');
     }
-
+    console.log('swapi');
     return await response.json();
   }
 
-  async getMovies() {
-    return await this.getDetails('/discover/movie');
+  // async getMovies() {
+  //   return this.getDetails('/discover/movie');
+  // }
+
+  // async getMovies (searchQuery = 'return', pageNumber = 1) {
+  //   const url = `${this._apiBase}/search/movie?query=${searchQuery}&include_adult=false&language=en-US&page=${pageNumber}`;
+  //   return await this.getDetails(url);
+  // }
+
+  async getMovies(query = '') {
+    const searchQuery = query ? `/search/movie?query=${query}` : '/discover/movie';
+    return await this.getDetails(searchQuery);
   }
 }

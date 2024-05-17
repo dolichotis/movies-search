@@ -1,0 +1,32 @@
+.cardList {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    gap: 20px;
+}
+
+.cardWrapper {
+    box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+    max-width: 450px;
+    border-radius: 0;
+}
+
+.ant-card-body {
+    display: flex;
+    height: 280px;
+}
+
+:where(.css-dev-only-do-not-override-mzwlov).ant-card .ant-card-body {
+    padding: 0;
+}
+
+:where(.css-dev-only-do-not-override-mzwlov).ant-card-bordered {
+    border-radius: 0;
+}
+
+.textWrapper {
+    padding: 20px;
+}
+
+:where(.css-dev-only-do-not-override-mzwlov).ant-space {
+    display: block;
+}

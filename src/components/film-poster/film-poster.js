@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import './film-poster.css';
 
-import ReleaseDate from '../release-date/release-date';
-
 export default class FilmPoster extends Component {
   render() {
     const { film, onError } = this.props;
@@ -22,9 +20,7 @@ export default class FilmPoster extends Component {
           />
         </div>
         <div className="filmInfo">
-          <h1>{film.title}</h1>
-          <ReleaseDate filmRelease={film.release_date} />
-          <button>Action</button>
+          <h1>{film.title}</h1>с<button>Action</button>
           <button>Drama</button>
           <p>{film.overview}</p>
         </div>

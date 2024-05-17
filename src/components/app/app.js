@@ -1,71 +1,111 @@
 import React, { Component } from 'react';
-import { Row, Col, Alert, Spin } from 'antd';
-import 'antd/dist/reset.css';
+import { Alert, Spin, Empty, Space } from 'antd';
 import { Offline, Online } from 'react-detect-offline';
+import 'antd/dist/reset.css';
 import './app.css';
+import { format, isValid, parseISO } from 'date-fns';
 
 import SwapiService from '../../services/swapi-service';
-import FilmPoster from '../film-poster/film-poster';
+import Search from '../search/search';
+import CardList from '../card-list/card-list';
 
 export default class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
+  state = {
+    films: [],
+    error: false,
+    loading: true,
+    isOnline: navigator.onLine,
+    notFound: false,
+  };
+
+  swapiService = new SwapiService();
+
+  componentDidMount() {
+    this.fetchMovies();
+  }
+
+  fetchMovies = (query) => {
+    this.setState({
       films: [],
       error: false,
       loading: true,
-      isOnline: navigator.onLine,
-    };
-    this.swapiService = new SwapiService();
-  }
+      notFound: false,
+    });
 
-  componentDidMount() {
-    setTimeout(() => {
-      if (!this.state.isOnline) {
-        this.setState({ error: 'Нет подключения к интернету', loading: false });
-        return;
-      }
-
-      this.swapiService
-        .getMovies()
-        .then((data) => {
+    this.swapiService
+      .getMovies(query)
+      .then((data) => {
+        console.log(data);
+        if (data.results.length === 0) {
+          this.setState({ notFound: true, loading: false });
+        } else {
           this.setState({ films: data.results, loading: false });
-        })
-        .catch((error) => {
-          this.setState({ error: error.message, loading: false });
-        });
-    }, 500);
-  }
+        }
+      })
+      .catch((error) => {
+        this.setState({ error: error.message, loading: false });
+      });
+  };
+
+  handleSearch = (query) => {
+    this.fetchMovies(query);
+  };
+
+  createTodoItem = (item) => {
+    const releaseDate =
+      item.release_date && isValid(parseISO(item.release_date))
+        ? format(parseISO(item.release_date), 'MMMM dd, yyyy')
+        : 'no release date';
+    //const releaseDate = item.release_date ? format(parseISO(item.release_date), 'MMMM dd, yyyy') : 'no release date';
+    const filmTitle = item.title || 'Movie title not specified';
+    const overview = item.overview || 'Movie overview not specified';
+    const popularity = item.popularity || 0;
+    let posterURL = 'not found';
+    // let posterURL = `${outOfPosterImg}`;
+    if (item.poster_path) {
+      posterURL = `https://image.tmdb.org/t/p/original/${item.poster_path}`;
+    }
+
+    return {
+      id: item.id,
+      filmTitle,
+      posterURL,
+      releaseDate,
+      overview,
+      popularity,
+    };
+  };
 
   onError = () => {
     this.setState({
-      isLoading: false,
-      isError: true,
+      loading: false,
+      error: true,
     });
   };
 
   render() {
-    const { films, error, loading } = this.state;
+    const { films, error, loading, notFound } = this.state;
 
     const isError = error ? <Alert message={error} description="Возникла ошибка!" type="error" showIcon /> : null;
     const spin = loading && !isError ? <Spin tip="Loading..." size="large" fullscreen /> : null;
+    const notFoundMovies = notFound ? <Empty description="No movies found" /> : null;
+
+    //const cardList = !loading && !notFound ? <CardList movieDataFromBase={films} /> : null;
 
     return (
       <section className="main">
-        <Row>
-          <Online>
+        <Online>
+          <Search onSearch={this.handleSearch} />
+          <Space direction="vertical" className="app" align="center">
             {spin}
-            {films.map((film) => (
-              <Col key={film.id} xs={24} sm={12}>
-                <FilmPoster film={film} onError={this.onError} />
-              </Col>
-            ))}
+            {notFoundMovies}
+            <CardList movieDataFromBase={films} />
             {isError}
-          </Online>
-          <Offline>
-            <Alert message={error} description="You're offline right now. Check your connection." type="info" />
-          </Offline>
-        </Row>
+          </Space>
+        </Online>
+        <Offline>
+          <Alert message={error} description="You're offline right now. Check your connection." type="info" />
+        </Offline>
       </section>
     );
   }
