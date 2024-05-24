@@ -28,8 +28,13 @@ export default class SwapiService {
   //   return await this.getDetails(url);
   // }
 
-  async getMovies(query = '') {
-    const searchQuery = query ? `/search/movie?query=${query}` : '/discover/movie';
+  // async getMovies(query = '') {
+  //   const searchQuery = query ? `/search/movie?query=${query}` : '/discover/movie';
+  //   return await this.getDetails(searchQuery);
+  // }
+
+  async getMovies(query = '', page = 20) {
+    const searchQuery = query ? `/search/movie?query=${query}&page=${page}` : `/movie/popular?page=${page}`;
     return await this.getDetails(searchQuery);
   }
 }

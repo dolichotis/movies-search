@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, Spin, Empty, Space } from 'antd';
+import { Alert, Spin, Empty, Space, Pagination } from 'antd';
 import { Offline, Online } from 'react-detect-offline';
 import 'antd/dist/reset.css';
 import './app.css';
@@ -16,6 +16,10 @@ export default class App extends Component {
     loading: true,
     isOnline: navigator.onLine,
     notFound: false,
+    currentPage: 1,
+    totalResults: 0,
+    resPerPage: 10,
+    searchQuery: '',
   };
 
   swapiService = new SwapiService();
@@ -24,7 +28,7 @@ export default class App extends Component {
     this.fetchMovies();
   }
 
-  fetchMovies = (query) => {
+  fetchMovies = (query = '', page = 1) => {
     this.setState({
       films: [],
       error: false,
@@ -33,13 +37,13 @@ export default class App extends Component {
     });
 
     this.swapiService
-      .getMovies(query)
+      .getMovies(query, page)
       .then((data) => {
         console.log(data);
         if (data.results.length === 0) {
           this.setState({ notFound: true, loading: false });
         } else {
-          this.setState({ films: data.results, loading: false });
+          this.setState({ films: data.results, loading: false, currentPage: page, totalResults: data.total_pages });
         }
       })
       .catch((error) => {
@@ -48,7 +52,12 @@ export default class App extends Component {
   };
 
   handleSearch = (query) => {
-    this.fetchMovies(query);
+    this.fetchMovies(query, 1);
+  };
+
+  handlePageChange = (page) => {
+    const { searchQuery } = this.state;
+    this.fetchMovies(searchQuery, page);
   };
 
   createTodoItem = (item) => {
@@ -84,7 +93,7 @@ export default class App extends Component {
   };
 
   render() {
-    const { films, error, loading, notFound } = this.state;
+    const { films, error, loading, notFound, currentPage, totalResults, resultsPerPage } = this.state;
 
     const isError = error ? <Alert message={error} description="Возникла ошибка!" type="error" showIcon /> : null;
     const spin = loading && !isError ? <Spin tip="Loading..." size="large" fullscreen /> : null;
@@ -101,6 +110,13 @@ export default class App extends Component {
             {notFoundMovies}
             <CardList movieDataFromBase={films} />
             {isError}
+            <Pagination
+              current={currentPage}
+              total={totalResults}
+              pageSize={resultsPerPage}
+              onChange={this.handlePageChange}
+              showSizeChanger={false}
+            />
           </Space>
         </Online>
         <Offline>
