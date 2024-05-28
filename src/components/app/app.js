@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, Spin, Empty, Space, Pagination } from 'antd';
+import { Alert, Spin, Empty, Space, Pagination, Tabs } from 'antd';
 import { Offline, Online } from 'react-detect-offline';
 import 'antd/dist/reset.css';
 import './app.css';
@@ -20,13 +20,27 @@ export default class App extends Component {
     totalResults: 0,
     resPerPage: 10,
     searchQuery: '',
+    guestSessionId: null,
   };
 
   swapiService = new SwapiService();
 
   componentDidMount() {
+    this.createGuestSession();
     this.fetchMovies();
   }
+
+  createGuestSession = () => {
+    this.swapiService
+      .createGuestSession()
+      .then((data) => {
+        this.setState({ guestSessionId: data.guest_session_id });
+        console.log('Guest session created:', data);
+      })
+      .catch((err) => {
+        this.setState({ error: err.message });
+      });
+  };
 
   fetchMovies = (query = '', page = 1) => {
     this.setState({
@@ -51,6 +65,35 @@ export default class App extends Component {
       });
   };
 
+  fetchRatedMovies = (page = 1) => {
+    const { guestSessionId } = this.state;
+
+    this.setState({
+      ratedFilms: [],
+      error: false,
+      loading: true,
+      notFound: false,
+    });
+
+    this.swapiService
+      .getRatedMovies(guestSessionId, page)
+      .then((data) => {
+        if (data.results.length === 0) {
+          this.setState({ notFound: true, loading: false });
+        } else {
+          this.setState({
+            ratedFilms: data.results,
+            loading: false,
+            currentPage: page,
+            totalResults: data.total_pages,
+          });
+        }
+      })
+      .catch((error) => {
+        this.setState({ error: error.message, loading: false });
+      });
+  };
+
   handleSearch = (query) => {
     this.fetchMovies(query, 1);
   };
@@ -58,6 +101,12 @@ export default class App extends Component {
   handlePageChange = (page) => {
     const { searchQuery } = this.state;
     this.fetchMovies(searchQuery, page);
+    this.setState({ currentPage: page });
+  };
+
+  handleRatedPageChange = (page) => {
+    this.fetchRatedMovies(page);
+    this.setState({ currentPage: page });
   };
 
   createTodoItem = (item) => {
@@ -93,7 +142,7 @@ export default class App extends Component {
   };
 
   render() {
-    const { films, error, loading, notFound, currentPage, totalResults, resultsPerPage } = this.state;
+    const { films, ratedFilms, error, loading, notFound, currentPage, totalResults, resPerPage } = this.state;
 
     const isError = error ? <Alert message={error} description="Возникла ошибка!" type="error" showIcon /> : null;
     const spin = loading && !isError ? <Spin tip="Loading..." size="large" fullscreen /> : null;
@@ -101,23 +150,57 @@ export default class App extends Component {
 
     //const cardList = !loading && !notFound ? <CardList movieDataFromBase={films} /> : null;
 
-    return (
-      <section className="main">
-        <Online>
-          <Search onSearch={this.handleSearch} />
+    const items = [
+      {
+        key: '1',
+        label: 'Search',
+        rootClassName: 'tabsWrapper',
+        children: (
+          <>
+            <Search onSearch={this.handleSearch} />
+            <Space direction="vertical" className="app" align="center">
+              {spin}
+              {notFoundMovies}
+              <CardList movieDataFromBase={films} />
+              {isError}
+              <Pagination
+                current={currentPage}
+                total={totalResults}
+                pageSize={resPerPage}
+                onChange={this.handlePageChange}
+                showSizeChanger={false}
+                rootClassName="paginationWrapper"
+              />
+            </Space>
+          </>
+        ),
+      },
+      {
+        key: '2',
+        label: 'Rated',
+        children: (
           <Space direction="vertical" className="app" align="center">
             {spin}
             {notFoundMovies}
-            <CardList movieDataFromBase={films} />
+            <CardList movieDataFromBase={ratedFilms} />
             {isError}
             <Pagination
               current={currentPage}
               total={totalResults}
-              pageSize={resultsPerPage}
-              onChange={this.handlePageChange}
+              pageSize={resPerPage}
+              onChange={this.handleRatedPageChange}
               showSizeChanger={false}
+              rootClassName="paginationWrapper"
             />
           </Space>
+        ),
+      },
+    ];
+
+    return (
+      <section className="main">
+        <Online>
+          <Tabs defaultActiveKey="1" items={items} />
         </Online>
         <Offline>
           <Alert message={error} description="You're offline right now. Check your connection." type="info" />

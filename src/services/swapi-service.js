@@ -1,5 +1,6 @@
 export default class SwapiService {
   _apiBase = 'https://api.themoviedb.org/3';
+  _apiKey = 'c5417ac242052d6f3dff41a026605851';
 
   async getDetails(url) {
     const options = {
@@ -36,5 +37,19 @@ export default class SwapiService {
   async getMovies(query = '', page = 20) {
     const searchQuery = query ? `/search/movie?query=${query}&page=${page}` : `/movie/popular?page=${page}`;
     return await this.getDetails(searchQuery);
+  }
+
+  async createGuestSession() {
+    const url = `${this._apiBase}/authentication/guest_session/new?api_key=${this._apiKey}`;
+    const resp = await fetch(url, { method: 'GET' });
+    if (!resp.ok) {
+      throw new Error('Не удалось зоздать гостевую сессию');
+    }
+    return await resp.json();
+  }
+
+  async getRatedMovies(sessionId, page = 1) {
+    const url = `/guest_session/${sessionId}/rated/movies?page=${page}&sort_by=created_at.desc&api_key=${this._apiKey}`;
+    return await this.getDetails(url);
   }
 }

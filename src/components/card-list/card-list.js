@@ -22,7 +22,9 @@ function shortenText(text, maxLength) {
 }
 
 const CardList = ({ movieDataFromBase }) => {
-  console.log('card');
+  if (!movieDataFromBase || movieDataFromBase.length === 0) {
+    return <p>No movies to display</p>;
+  }
 
   return (
     <div className="cardList">
