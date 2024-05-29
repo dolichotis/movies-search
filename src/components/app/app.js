@@ -109,6 +109,20 @@ export default class App extends Component {
     this.setState({ currentPage: page });
   };
 
+  handleRatingChange = (movieId, rating) => {
+    const { guestSessionId } = this.state;
+    this.swapiService.rateMovie(movieId, rating, guestSessionId).then((resp) => {
+      if (resp.success) {
+        this.setState((prevState) => ({
+          ratings: {
+            ...prevState.ratings,
+            [movieId]: rating,
+          },
+        }));
+      }
+    });
+  };
+
   createTodoItem = (item) => {
     const releaseDate =
       item.release_date && isValid(parseISO(item.release_date))
@@ -142,7 +156,7 @@ export default class App extends Component {
   };
 
   render() {
-    const { films, ratedFilms, error, loading, notFound, currentPage, totalResults, resPerPage } = this.state;
+    const { films, ratedFilms, ratings, error, loading, notFound, currentPage, totalResults, resPerPage } = this.state;
 
     const isError = error ? <Alert message={error} description="Возникла ошибка!" type="error" showIcon /> : null;
     const spin = loading && !isError ? <Spin tip="Loading..." size="large" fullscreen /> : null;
@@ -161,7 +175,7 @@ export default class App extends Component {
             <Space direction="vertical" className="app" align="center">
               {spin}
               {notFoundMovies}
-              <CardList movieDataFromBase={films} />
+              <CardList movieDataFromBase={films} ratings={ratings} onRatingChange={this.handleRatingChange} />
               {isError}
               <Pagination
                 current={currentPage}
@@ -182,7 +196,7 @@ export default class App extends Component {
           <Space direction="vertical" className="app" align="center">
             {spin}
             {notFoundMovies}
-            <CardList movieDataFromBase={ratedFilms} />
+            <CardList movieDataFromBase={ratedFilms} ratings={ratings} onRatingChange={this.handleRatingChange} />
             {isError}
             <Pagination
               current={currentPage}

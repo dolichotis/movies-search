@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card } from 'antd';
+import { Card, Rate } from 'antd';
 
 import './card-list.css';
 import ReleaseDate from '../release-date/release-date';
@@ -21,7 +21,7 @@ function shortenText(text, maxLength) {
   }
 }
 
-const CardList = ({ movieDataFromBase }) => {
+const CardList = ({ movieDataFromBase = [], ratings = {}, onRatingChange }) => {
   if (!movieDataFromBase || movieDataFromBase.length === 0) {
     return <p>No movies to display</p>;
   }
@@ -35,7 +35,7 @@ const CardList = ({ movieDataFromBase }) => {
               <img
                 alt={movie.title}
                 src={`https://image.tmdb.org/t/p/original/${movie.poster_path}`}
-                style={{ height: '280px', objectFit: 'cover' }} // Добавляем стили для изображения
+                style={{ height: '280px', objectFit: 'cover' }}
               />
             </div>
             <div className="textWrapper">
@@ -43,7 +43,12 @@ const CardList = ({ movieDataFromBase }) => {
               <h3>
                 <ReleaseDate filmRelease={movie.release_date} />
               </h3>
-              <p>{shortenText(movie.overview, 150)}</p>
+              <p>{shortenText(movie.overview, 100)}</p>
+              <Rate
+                allowHalf
+                value={ratings[movie.id] || 0}
+                onChange={(value) => onRatingChange(movie.id, value)}
+              />
             </div>
           </Card>
         </div>
