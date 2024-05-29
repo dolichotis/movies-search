@@ -8,6 +8,7 @@
     box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
     max-width: 450px;
     border-radius: 0;
+    position: relative;
 }
 
 .ant-card-body {
@@ -29,4 +30,34 @@
 
 :where(.css-dev-only-do-not-override-mzwlov).ant-space {
     display: block;
+}
+
+.ratingCircle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.rating-low {
+    border: 2px solid #E90000;
+}
+
+.rating-medium {
+    border: 2px solid #E97E00;
+}
+
+.rating-medium-well {
+    border: 2px solid #E9D100;
+}
+
+.rating-high {
+    border: 2px solid #66E900;
 }
