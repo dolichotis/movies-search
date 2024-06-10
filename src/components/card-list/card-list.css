@@ -16,6 +16,11 @@
     height: 280px;
 }
 
+.imageWrapper img {
+    height: 280px;
+    objectFit: cover;
+}
+
 :where(.css-dev-only-do-not-override-mzwlov).ant-card .ant-card-body {
     padding: 0;
 }
@@ -30,6 +35,13 @@
 
 :where(.css-dev-only-do-not-override-mzwlov).ant-space {
     display: block;
+}
+
+.releaseDate {
+    font-size: 12px;
+    line-height: 22px;
+    text-align: left;
+    color: #827E7E;
 }
 
 .ratingCircle {
@@ -60,4 +72,37 @@
 
 .rating-high {
     border: 2px solid #66E900;
+}
+
+@media (max-width: 900px) {
+    .cardWrapper,
+    .infoCard {
+        width: 388px;
+        height: 245px;
+    }
+
+    .cardList {
+        grid-template-columns: 100%;
+    }
+
+    .textWrapper {
+        padding: 0px 13px;
+    }
+
+    .ratingCircle {
+        top: 5px;
+        right: 5px;
+        width: 25px;
+        height: 25px;
+        font-size: 10px;
+    }
+
+    .imageWrapper {
+        height: 100%;
+    }
+
+    .imageWrapper img {
+        height: 91px;
+        margin: 6px 0 0 10px;
+    }
 }

@@ -49,16 +49,12 @@ const CardList = ({ movieDataFromBase = [], ratings = {}, onRatingChange }) => {
           <div className="cardWrapper" key={id}>
             <Card hoverable className="infoCard">
               <div className="imageWrapper">
-                <img
-                  alt={title}
-                  src={`https://image.tmdb.org/t/p/original/${poster_path}`}
-                  style={{ height: '280px', objectFit: 'cover' }}
-                />
+                <img alt={title} src={`https://image.tmdb.org/t/p/original/${poster_path}`} />
               </div>
               <div className={`ratingCircle ${ratingClass}`}>{initialRating.toFixed(1)}</div>
               <div className="textWrapper">
                 <h1>{title}</h1>
-                <h3>
+                <h3 className="releaseDate">
                   <ReleaseDate filmRelease={release_date} />
                 </h3>
                 <p>{shortenText(overview, 95)}</p>
