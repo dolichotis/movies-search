@@ -55,21 +55,14 @@ const CardList = ({ movieDataFromBase = [], ratings = {}, onRatingChange }) => {
                   style={{ height: '280px', objectFit: 'cover' }}
                 />
               </div>
-              <div className={`ratingCircle ${ratingClass}`}>
-                {initialRating.toFixed(1)}
-              </div>
+              <div className={`ratingCircle ${ratingClass}`}>{initialRating.toFixed(1)}</div>
               <div className="textWrapper">
                 <h1>{title}</h1>
                 <h3>
                   <ReleaseDate filmRelease={release_date} />
                 </h3>
-                <p>{shortenText(overview, 100)}</p>
-                <Rate
-                  allowHalf
-                  value={ratings[id] || 0}
-                  onChange={(value) => onRatingChange(id, value)}
-                  count={10}
-                />
+                <p>{shortenText(overview, 95)}</p>
+                <Rate allowHalf value={ratings[id] || 0} onChange={(value) => onRatingChange(id, value)} count={10} />
               </div>
             </Card>
           </div>
