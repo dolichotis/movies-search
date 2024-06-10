@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Rate } from 'antd';
+import { Rate } from 'antd';
 
 import './card-list.css';
 import ReleaseDate from '../release-date/release-date';
@@ -47,20 +47,18 @@ const CardList = ({ movieDataFromBase = [], ratings = {}, onRatingChange }) => {
 
         return (
           <div className="cardWrapper" key={id}>
-            <Card hoverable className="infoCard">
-              <div className="imageWrapper">
-                <img alt={title} src={`https://image.tmdb.org/t/p/original/${poster_path}`} />
-              </div>
-              <div className={`ratingCircle ${ratingClass}`}>{initialRating.toFixed(1)}</div>
-              <div className="textWrapper">
-                <h1>{title}</h1>
-                <h3 className="releaseDate">
-                  <ReleaseDate filmRelease={release_date} />
-                </h3>
-                <p>{shortenText(overview, 95)}</p>
-                <Rate allowHalf value={ratings[id] || 0} onChange={(value) => onRatingChange(id, value)} count={10} />
-              </div>
-            </Card>
+            <div className="imageWrapper">
+              <img alt={title} src={`https://image.tmdb.org/t/p/original/${poster_path}`} />
+            </div>
+            <div className={`ratingCircle ${ratingClass}`}>{initialRating.toFixed(1)}</div>
+            <div className="textWrapper">
+              <h1>{title}</h1>
+              <h3 className="releaseDate">
+                <ReleaseDate filmRelease={release_date} />
+              </h3>
+              <p>{shortenText(overview, 95)}</p>
+              <Rate allowHalf value={ratings[id] || 0} onChange={(value) => onRatingChange(id, value)} count={10} />
+            </div>
           </div>
         );
       })}

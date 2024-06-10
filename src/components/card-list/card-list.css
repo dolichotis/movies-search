@@ -9,11 +9,9 @@
     max-width: 450px;
     border-radius: 0;
     position: relative;
-}
-
-.ant-card-body {
     display: flex;
     height: 280px;
+    background-color: #ffffff;
 }
 
 .imageWrapper img {
@@ -21,20 +19,8 @@
     objectFit: cover;
 }
 
-:where(.css-dev-only-do-not-override-mzwlov).ant-card .ant-card-body {
-    padding: 0;
-}
-
-:where(.css-dev-only-do-not-override-mzwlov).ant-card-bordered {
-    border-radius: 0;
-}
-
 .textWrapper {
     padding: 20px;
-}
-
-:where(.css-dev-only-do-not-override-mzwlov).ant-space {
-    display: block;
 }
 
 .releaseDate {
@@ -75,8 +61,7 @@
 }
 
 @media (max-width: 900px) {
-    .cardWrapper,
-    .infoCard {
+    .cardWrapper {
         width: 388px;
         height: 245px;
     }
