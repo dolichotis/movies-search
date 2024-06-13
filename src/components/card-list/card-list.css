@@ -23,11 +23,17 @@
     padding: 20px;
 }
 
-.releaseDate {
+.cardTitle {
+    margin: 0;
+}
+
+.genre {
+    margin-bottom: 8px;
+}
+
+.genreBut {
     font-size: 12px;
-    line-height: 22px;
-    text-align: left;
-    color: #827E7E;
+    margin-right: 8px;
 }
 
 .ratingCircle {
@@ -42,6 +48,15 @@
     justify-content: center;
     font-size: 12px;
     font-weight: bold;
+}
+
+.description {
+    margin-bottom: 8px;
+}
+
+.rating {
+    font-size: 15px;
+    margin-top: 0;
 }
 
 .rating-low {

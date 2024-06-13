@@ -31,4 +31,9 @@ body {
 .ant-tabs-nav-wrap {
     display: flex;
     justify-content: center;
+
+}
+
+.ant-tabs {
+    width: 100%;
 }

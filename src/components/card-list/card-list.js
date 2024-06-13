@@ -33,17 +33,27 @@ function getRatingClass(rating) {
   }
 }
 
-const CardList = ({ movieDataFromBase = [], ratings = {}, onRatingChange }) => {
+const CardList = ({ movieDataFromBase = [], ratings = {}, onRatingChange, genresList }) => {
   if (!movieDataFromBase || movieDataFromBase.length === 0) {
     return <p>No movies to display</p>;
   }
 
+  const getGenres = (genreIds) => {
+    return genreIds
+      .map((id) => {
+        const genre = genresList.find((g) => g.id === id);
+        return genre ? genre.name : null;
+      })
+      .filter((genre) => genre !== null);
+  };
+
   return (
     <div className="cardList">
       {movieDataFromBase.map((movie) => {
-        const { id, title, poster_path, release_date, overview, vote_average } = movie;
+        const { id, title, poster_path, release_date, overview, vote_average, genre_ids } = movie;
         const initialRating = vote_average || 0;
         const ratingClass = getRatingClass(initialRating);
+        const genres = getGenres(genre_ids);
 
         return (
           <div className="cardWrapper" key={id}>
@@ -52,12 +62,23 @@ const CardList = ({ movieDataFromBase = [], ratings = {}, onRatingChange }) => {
             </div>
             <div className={`ratingCircle ${ratingClass}`}>{initialRating.toFixed(1)}</div>
             <div className="textWrapper">
-              <h1>{title}</h1>
-              <h3 className="releaseDate">
-                <ReleaseDate filmRelease={release_date} />
-              </h3>
-              <p>{shortenText(overview, 95)}</p>
-              <Rate allowHalf value={ratings[id] || 0} onChange={(value) => onRatingChange(id, value)} count={10} />
+              <h1 className="cardTitle">{title}</h1>
+              <ReleaseDate filmRelease={release_date} />
+              <div className="genre">
+                {genres.map((genre) => (
+                  <button className="genreBut" key={genre}>
+                    {genre}
+                  </button>
+                ))}
+              </div>
+              <p className="description">{shortenText(overview, 65)}</p>
+              <Rate
+                rootClassName="rating"
+                allowHalf
+                value={ratings[id] || 0}
+                onChange={(value) => onRatingChange(id, value)}
+                count={10}
+              />
             </div>
           </div>
         );

@@ -72,4 +72,9 @@ export default class SwapiService {
     }
     return await response.json();
   }
+
+  async getGenres() {
+    const url = `/genre/movie/list?api_key=${this._apiKey}`;
+    return await this.getDetails(url);
+  }
 }
