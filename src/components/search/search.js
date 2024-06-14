@@ -15,6 +15,7 @@ export default class Search extends Component {
         placeholder="Type to search..."
         size="large"
         onChange={(e) => this.handleSearch(e.target.value)} // Вызываем функцию handleSearch при изменении значения поля ввода
+        rootClassName="inputPanel"
       />
     );
   }

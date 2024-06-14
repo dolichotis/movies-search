@@ -210,9 +210,8 @@ export default class App extends Component {
       {
         key: '1',
         label: 'Search',
-        rootClassName: 'tabsWrapper',
         children: (
-          <>
+          <div className="tabsWrapper">
             <Search onSearch={this.handleSearch} />
             <Space direction="vertical" className="app" align="center">
               {spin}
@@ -233,14 +232,14 @@ export default class App extends Component {
                 rootClassName="paginationWrapper"
               />
             </Space>
-          </>
+          </div>
         ),
       },
       {
         key: '2',
         label: 'Rated',
         children: (
-          <>
+          <div className="tabsWrapper">
             <Space direction="vertical" className="app" align="center">
               {spin}
               {notFoundMovies}
@@ -260,7 +259,7 @@ export default class App extends Component {
                 rootClassName="paginationWrapper"
               />
             </Space>
-          </>
+          </div>
         ),
       },
     ];
